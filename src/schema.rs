@@ -25,10 +25,20 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    wallets (id) {
+        id -> Uuid,
+        balance -> Int4,
+        user_id -> Uuid,
+    }
+}
+
 diesel::joinable!(products -> gyms (gym_id));
+diesel::joinable!(wallets -> users (user_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     gyms,
     products,
     users,
+    wallets,
 );
