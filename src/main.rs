@@ -33,6 +33,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(Data::new(AppState { db: pool.clone() }))
             .service(get_user_controller)
+            .service(create_user_controller)
             .wrap(logger)
     })
     .bind(("127.0.0.1", 80))?

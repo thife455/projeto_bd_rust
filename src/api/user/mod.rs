@@ -1,6 +1,6 @@
-use crate::{model::user::User, AppState};
+use crate::model::user::CreateUser;
 use crate::repositories::user::*;
-use actix_web::HttpRequest;
+use crate::AppState;
 use actix_web::{
     delete, get, post, put,
     web::{self, Data},
@@ -12,13 +12,21 @@ pub async fn get_user_controller(state: Data<AppState>) -> impl Responder {
     let user_response = get_users(state).await;
     match user_response {
         Ok(users) => return HttpResponse::Ok().json(users),
-        Err(e) => HttpResponse::InternalServerError().json("Unexpected error in query"),
+        Err(_e) => HttpResponse::InternalServerError().json("Unexpected error in query"),
     }
 }
 
 #[post("/user")]
-pub async fn create_user() -> impl Responder {
-    HttpResponse::Ok().body("create_user")
+pub async fn create_user_controller(
+    state: Data<AppState>,
+    body: web::Json<CreateUser>,
+) -> impl Responder {
+    let params = body.into_inner();
+    let response = create_user(state, params).await;
+    match response {
+        Ok(user) => HttpResponse::Ok().json(user),
+        Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
+    }
 }
 
 #[put("/user")]

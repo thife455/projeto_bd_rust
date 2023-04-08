@@ -3,7 +3,7 @@ use crate::{
     AppState,
 };
 use actix_web::web::Data;
-use sqlx::{Error, FromRow};
+use sqlx::Error;
 
 pub async fn get_users(state: Data<AppState>) -> Result<Vec<User>, Error> {
     sqlx::query_as!(User, "SELECT * FROM users")
@@ -17,7 +17,7 @@ pub async fn create_user(state: Data<AppState>, user_data: CreateUser) -> Result
 
     let response = sqlx::query_as!(
         User,
-        "INSERT INTO users (id, name, email) VALUES ($1, $2, $3)",
+        "INSERT INTO users (id, name, email) VALUES ($1, $2, $3) RETURNING id, name, email",
         id,
         name,
         email
@@ -26,7 +26,14 @@ pub async fn create_user(state: Data<AppState>, user_data: CreateUser) -> Result
     .await;
 
     match response {
-        Ok(user) => User::from_row(&user),
+        Ok(user) => Ok(user),
         Err(e) => Err(e),
     }
 }
+
+// pub async fn get_user(state: Data<AppState>, id: String) -> Result<User, Error> {
+//     let id = id;
+//     sqlx::query_as!(User, "SELECT * FROM users WHERE id = \"$1\";", id)
+//         .fetch_one(&state.db)
+//         .await
+// }
