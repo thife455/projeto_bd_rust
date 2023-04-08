@@ -12,8 +12,8 @@ diesel::table! {
     products (id) {
         id -> Uuid,
         name -> Text,
-        price -> Numeric,
-        gym_id -> Nullable<Uuid>,
+        price -> Int4,
+        gym_id -> Uuid,
     }
 }
 

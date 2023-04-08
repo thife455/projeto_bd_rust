@@ -6,13 +6,13 @@ use uuid::Uuid;
 pub struct Product {
     pub id: Uuid,
     pub name: String,
-    pub price: f32,
+    pub price: i32,
     pub gym_id: Uuid,
 }
 
 #[derive(FromRow, Deserialize, Serialize)]
 pub struct CreateProduct {
     pub name: String,
-    pub price: String,
+    pub price: i32,
     pub gym_id: Uuid,
 }

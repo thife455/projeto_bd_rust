@@ -11,7 +11,7 @@ use actix_web::{
 pub async fn get_gyms_controller(state: Data<AppState>) -> impl Responder {
     let gym_response = get_gyms(state).await;
     match gym_response {
-        Ok(gyms) => return HttpResponse::Ok().json(gyms),
+        Ok(gyms) => HttpResponse::Ok().json(gyms),
         Err(_e) => HttpResponse::InternalServerError().json("Unexpected error in query"),
     }
 }

@@ -11,7 +11,7 @@ use actix_web::{
 pub async fn get_user_controller(state: Data<AppState>) -> impl Responder {
     let user_response = get_users(state).await;
     match user_response {
-        Ok(users) => return HttpResponse::Ok().json(users),
+        Ok(users) => HttpResponse::Ok().json(users),
         Err(_e) => HttpResponse::InternalServerError().json("Unexpected error in query"),
     }
 }
