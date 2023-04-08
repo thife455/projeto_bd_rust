@@ -14,3 +14,8 @@ pub struct CreateUser {
     pub name: String,
     pub email: String,
 }
+
+#[derive(Deserialize, Serialize)]
+pub struct DepositParams {
+    pub amount: i32,
+}
