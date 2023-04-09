@@ -11,14 +11,16 @@ pub async fn get_gyms(state: Data<AppState>) -> Result<Vec<Gym>, Error> {
 
 pub async fn create_gym(state: Data<AppState>, user_data: CreateGym) -> Result<Gym, Error> {
     let id = uuid::Uuid::new_v4();
-    let CreateGym { name, address } = user_data;
+    let CreateGym { name, address , city} = user_data;
 
     let response = sqlx::query_as!(
         Gym,
-        "INSERT INTO gyms (id, name, address) VALUES ($1, $2, $3) RETURNING id, name, address",
+        "INSERT INTO gyms (id, name, address, city) VALUES ($1, $2, $3, $4) RETURNING id, name, address, city",
         id,
         name,
-        address
+        address, 
+        city
+
     )
     .fetch_one(&state.db)
     .await;

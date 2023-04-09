@@ -7,10 +7,12 @@ pub struct Gym {
     pub id: Uuid,
     pub name: String,
     pub address: String,
+    pub city: String
 }
 
 #[derive(FromRow, Deserialize, Serialize)]
 pub struct CreateGym {
     pub name: String,
     pub address: String,
+    pub city: String
 }

@@ -5,6 +5,7 @@ diesel::table! {
         id -> Uuid,
         name -> Varchar,
         address -> Varchar,
+        city -> Varchar,
     }
 }
 
