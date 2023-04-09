@@ -4,6 +4,7 @@ use crate::{
 };
 use actix_web::web::Data;
 use sqlx::Error;
+use uuid::Uuid;
 
 pub async fn get_product(state: Data<AppState>) -> Result<Vec<Product>, Error> {
     sqlx::query_as!(Product, "SELECT * FROM products")
@@ -37,4 +38,8 @@ pub async fn create_product(
         Ok(user) => Ok(user),
         Err(e) => Err(e),
     }
+}
+
+pub async fn find_product_by_id(state: Data<AppState>, id: Uuid) -> Result<Product, Error>{
+    sqlx::query_as!(Product, "SELECT * FROM products WHERE id = $1", id).fetch_one(&state.db).await
 }

@@ -1,6 +1,7 @@
 mod api;
 mod model;
 mod repositories;
+mod services;
 
 use std::env;
 

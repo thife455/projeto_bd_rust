@@ -16,3 +16,8 @@ pub struct CreateProduct {
     pub price: i32,
     pub gym_id: Uuid,
 }
+
+#[derive(Deserialize, Serialize)]
+pub struct BuyProduct {
+    pub user_id: String,
+}

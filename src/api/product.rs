@@ -1,6 +1,7 @@
 use crate::model::product::*;
 use crate::repositories::product::*;
 use crate::AppState;
+
 use actix_web::{
     get, post,
     web::{self, Data},
@@ -27,4 +28,15 @@ pub async fn create_products_controller(
         Ok(gym) => HttpResponse::Ok().json(gym),
         Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
     }
+}
+
+#[post("products/{id}/buy")]
+pub async fn buy_product(
+    state: Data<AppState>,
+    info: web::Path<(uuid::Uuid,)>,
+    body: web::Json<BuyProduct>,
+) -> impl Responder {
+    let product = find_product_by_id(state, info.0).await.unwrap();
+
+    HttpResponse::InternalServerError().json("Not implemented")
 }
