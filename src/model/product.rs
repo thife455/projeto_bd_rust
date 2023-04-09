@@ -19,5 +19,5 @@ pub struct CreateProduct {
 
 #[derive(Deserialize, Serialize)]
 pub struct BuyProduct {
-    pub user_id: String,
+    pub user_id: Uuid,
 }

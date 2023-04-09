@@ -1,6 +1,8 @@
-use crate::model::product::*;
+use crate::model::user_product::CreateUserProduct;
 use crate::repositories::product::*;
+use crate::repositories::user_product::create_user_product;
 use crate::AppState;
+use crate::{model::product::*, services::wallet::debit};
 
 use actix_web::{
     get, post,
@@ -36,7 +38,25 @@ pub async fn buy_product(
     info: web::Path<(uuid::Uuid,)>,
     body: web::Json<BuyProduct>,
 ) -> impl Responder {
-    let product = find_product_by_id(state, info.0).await.unwrap();
+    let product = find_product_by_id(state.clone(), info.0).await.unwrap();
+    let user_id = body.into_inner().user_id;
 
-    HttpResponse::InternalServerError().json("Not implemented")
+    if let Err(e) = debit(state.clone(), &product.price, user_id)
+        .await
+        .map_err(|_e| HttpResponse::InternalServerError().json("Internal Server Error"))
+    {
+        return e;
+    }
+
+    let user_product_data = CreateUserProduct {
+        user_id,
+        product_id: info.0,
+    };
+
+    let user_product = create_user_product(state, user_product_data).await;
+
+    match user_product {
+        Ok(user_product) => HttpResponse::Ok().json(user_product),
+        Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
+    }
 }
