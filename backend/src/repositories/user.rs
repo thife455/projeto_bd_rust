@@ -4,6 +4,7 @@ use crate::{
 };
 use actix_web::web::Data;
 use sqlx::Error;
+use uuid::Uuid;
 
 pub async fn get_users(state: Data<AppState>) -> Result<Vec<User>, Error> {
     sqlx::query_as!(User, "SELECT * FROM users")
@@ -29,6 +30,12 @@ pub async fn create_user(state: Data<AppState>, user_data: CreateUser) -> Result
         Ok(user) => Ok(user),
         Err(e) => Err(e),
     }
+}
+
+pub async fn get_user_by_id(state: Data<AppState>, user_id: Uuid) -> Result<User, Error> {
+    sqlx::query_as!(User, "SELECT * FROM users WHERE id = $1", user_id)
+        .fetch_one(&state.db)
+        .await
 }
 
 // pub async fn get_user(state: Data<AppState>, id: String) -> Result<User, Error> {

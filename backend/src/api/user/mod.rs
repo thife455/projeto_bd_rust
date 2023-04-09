@@ -4,7 +4,7 @@ use crate::repositories::wallet::{find_wallet_by_user_id, update_balance};
 use crate::repositories::{user::*, wallet::create_wallet};
 use crate::AppState;
 use actix_web::{
-    delete, get, post, put,
+    delete, get, post,
     web::{self, Data},
     HttpResponse, Responder,
 };
@@ -56,9 +56,15 @@ pub async fn deposit_user(
     }
 }
 
-#[put("/user")]
-pub async fn update_user() -> impl Responder {
-    HttpResponse::Ok().body("update_user")
+#[get("/user/{id}")]
+pub async fn get_user_id_controller(
+    info: web::Path<(uuid::Uuid,)>,
+    state: Data<AppState>,
+) -> impl Responder {
+    match get_user_by_id(state, info.0).await {
+        Ok(user) => HttpResponse::Ok().json(user),
+        Err(_) => HttpResponse::InternalServerError().json("Error in query"),
+    }
 }
 
 #[delete("/user")]

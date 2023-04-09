@@ -8,7 +8,9 @@ use std::env;
 use actix_cors::Cors;
 use actix_web::http::header;
 use actix_web::{middleware::Logger, web::Data, App, HttpServer};
+use api::gym::{create_gym_controller, get_gyms_controller};
 use api::user::*;
+use repositories::user::get_user_by_id;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 
 pub struct AppState {
@@ -43,6 +45,9 @@ async fn main() -> std::io::Result<()> {
             .app_data(Data::new(AppState { db: pool.clone() }))
             .service(get_user_controller)
             .service(create_user_controller)
+            .service(get_user_id_controller)
+            .service(get_gyms_controller)
+            .service(create_gym_controller)
             .wrap(logger)
             .wrap(cors)
     })

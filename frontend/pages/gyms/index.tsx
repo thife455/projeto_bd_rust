@@ -2,11 +2,11 @@ import { useQuery } from "react-query";
 import { api } from "../../utils/api";
 import { useRouter } from "next/router";
 
-export default function UserPage() {
+export default function GymPage() {
   const router = useRouter();
   const { data, error, isLoading } = useQuery("users", async () => {
-    const users = await api.get("/user");
-    return users.data;
+    const gyms = await api.get("/gym");
+    return gyms.data;
   });
 
   if (isLoading) {
@@ -22,17 +22,17 @@ export default function UserPage() {
               Nome
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Email
+              Endereco
             </th>
           </tr>
         </thead>
         <tbody>
-          {data.map((user) => (
-            <tr key={user.id}>
-              <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
-              <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
+          {data.map((gym) => (
+            <tr key={gym.id}>
+              <td className="px-6 py-4 whitespace-nowrap">{gym.name}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{gym.address}</td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <button onClick={() => {router.push(`users/${user.id}`)}} className="bg-blue-500 text-white rounded-md">
+                <button onClick={() => {router.push(`users/${gym.id}`)}} className="bg-blue-500 text-white rounded-md">
                   <p className="m-3">Detalhes</p>
                 </button>
               </td>
