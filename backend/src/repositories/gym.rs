@@ -9,7 +9,7 @@ pub async fn get_gyms(state: Data<AppState>) -> Result<Vec<Gym>, Error> {
         .await
 }
 
-pub async fn create_gym(state: Data<AppState>, user_data: CreateGym) -> Result<Gym, Error> {
+pub async fn create_gym(state: &Data<AppState>, user_data: CreateGym) -> Result<Gym, Error> {
     let id = uuid::Uuid::new_v4();
     let CreateGym { name, address , city} = user_data;
 

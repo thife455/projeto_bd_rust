@@ -22,7 +22,7 @@ pub async fn create_gym_controller(
     body: web::Json<CreateGym>,
 ) -> impl Responder {
     let params = body.into_inner();
-    let response = create_gym(state, params).await;
+    let response = create_gym(&state, params).await;
     match response {
         Ok(gym) => HttpResponse::Ok().json(gym),
         Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
