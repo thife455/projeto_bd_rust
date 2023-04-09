@@ -1,35 +1,45 @@
-import { GetStaticProps } from 'next'
-import Link from 'next/link'
+import { useQuery } from "react-query";
+import { api } from "../../utils/api";
+import { useRouter } from "next/router";
 
-import { User } from '../../interfaces'
-import { sampleUserData } from '../../utils/sample-data'
-import Layout from '../../components/Layout'
-import List from '../../components/List'
+export default function UserPage() {
+  const router = useRouter();
+  const { data, error, isLoading } = useQuery("users", async () => {
+    const users = await api.get("/user");
+    return users.data;
+  });
 
-type Props = {
-  items: User[]
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  
+  return (
+    <>
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead>
+          <tr>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Name
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Email
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((user) => (
+            <tr key={user.id}>
+              <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <button onClick={() => {router.push(`users/${user.id}`)}} className="bg-blue-500 text-white rounded-md">
+                  <p className="m-3">Detalhes</p>
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
 }
-
-const WithStaticProps = ({ items }: Props) => (
-  <Layout title="Users List | Next.js + TypeScript Example">
-    <h1>Users List</h1>
-    <p>
-      Example fetching data from inside <code>getStaticProps()</code>.
-    </p>
-    <p>You are currently on: /users</p>
-    <List items={items} />
-    <p>
-      <Link href="/">Go home</Link>
-    </p>
-  </Layout>
-)
-
-export const getStaticProps: GetStaticProps = async () => {
-  // Example for including static props in a Next.js function component page.
-  // Don't forget to include the respective types for any props passed into
-  // the component.
-  const items: User[] = sampleUserData
-  return { props: { items } }
-}
-
-export default WithStaticProps

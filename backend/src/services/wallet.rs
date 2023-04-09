@@ -1,6 +1,5 @@
 use crate::model::wallet::*;
 use actix_web::web;
-use sqlx::Error::{self, *};
 use uuid::Uuid;
 
 use crate::{

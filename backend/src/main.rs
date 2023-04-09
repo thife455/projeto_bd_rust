@@ -5,6 +5,8 @@ mod services;
 
 use std::env;
 
+use actix_cors::Cors;
+use actix_web::http::header;
 use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 use api::user::*;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
@@ -31,11 +33,18 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         let logger = Logger::default();
+
+        let cors = Cors::default()
+            .allowed_origin("http://localhost:3000")
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+            .max_age(3600);
         App::new()
             .app_data(Data::new(AppState { db: pool.clone() }))
             .service(get_user_controller)
             .service(create_user_controller)
             .wrap(logger)
+            .wrap(cors)
     })
     .bind(("127.0.0.1", 80))?
     .run()
