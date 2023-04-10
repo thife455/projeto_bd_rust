@@ -54,6 +54,16 @@ pub async fn list_user_by_gym(state: Data<AppState>, gym_id: Uuid) -> Result<Vec
     .await
 }
 
+pub async fn list_user_with_purchases_below_price(state: Data<AppState>, preco_min: i32) -> Result<Vec<User>, Error> {
+    sqlx::query_as!(
+        User,
+        "SELECT U.id, U.name, U.email, SUM(P.price) FROM users U, user_products UP, products P WHERE U.id = UP.user_id AND P.id = UP.product_id GROUP BY U.id HAVING SUM(P.price) < $1",
+        preco_max
+    ) 
+    .fetch_all(&state.db)
+    .await
+}
+
 pub async fn order_user_by_name(state: Data<AppState>) -> Result<Vec<User>, Error> {
     sqlx::query_as!(User, "SELECT * FROM users ORDER BY name")
         .fetch_all(&state.db)
