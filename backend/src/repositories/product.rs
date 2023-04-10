@@ -48,7 +48,7 @@ pub async fn find_products_by_gym_id(state: Data<AppState>, gym_id: Uuid) -> Res
     sqlx::query_as!(Product, "SELECT * FROM products WHERE gym_id = $1", gym_id).fetch_all(&state.db).await
 }
 
-pub async fn search_most_sold_products(state: Data<AppState>) -> Resutl<Vec<Product>, Error> {
+pub async fn search_most_sold_products(state: Data<AppState>) -> Result<Vec<Product>, Error> {
     sqlx::query_as!(Product, "SELECT * FROM products P ORDER BY (SELECT COUNT(*) FROM user_products UP WHERE UP.product_id = P.id)").fetch_all(&state.db).await
 }
 
@@ -57,10 +57,10 @@ pub async fn search_product_above_price(state: Data<AppState>, price: i32) -> Re
 }
 
 pub async fn list_products_in_city(state: Data<AppState>, city: String) -> Result<Vec<Product>, Error> {
-    sqlx::query_as!(Product, "SELECT P.id, P.name, P.price, P.gym_id FROM products P, gyms G WHERE P.gym_id =G.id AND G.city = $1", city)
+    sqlx::query_as!(Product, "SELECT P.id, P.name, P.price, P.gym_id FROM products P, gyms G WHERE P.gym_id =G.id AND G.city = $1", city).fetch_all(&state.db).await
 }
 
 pub async fn search_product_by_name_order_value(state: Data<AppState>, name: String) -> Result<Vec<Product>, Error> {
-    sqlx::query_as!(Product, "SELECT p.NAME, P.ID, P.PRICE, P.gym_id FROM products P WHERE P.name LIKE '%$1%' ORDER BY P.price", name)
+    sqlx::query_as!(Product, "SELECT p.name, P.id, P.price, P.gym_id FROM products P WHERE P.name LIKE $1  ORDER BY P.price", name).fetch_all(&state.db).await
 }
 
