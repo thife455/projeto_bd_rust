@@ -46,7 +46,7 @@ pub async fn update_balance(
 ) -> Result<Wallet, Error> {
     let query_response = sqlx::query_as!(
         Wallet,
-        "UPDATE wallets SET balance = $1 WHERE user_id = $2 RETURNING *",
+        "UPDATE wallets SET balance = $1 WHERE id = $2 RETURNING *",
         new_balance,
         wallet_id
     )

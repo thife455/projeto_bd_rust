@@ -8,8 +8,17 @@ use actix_web::{
     web::{self, Data},
     HttpResponse, Responder,
 };
+pub fn user_scope() -> actix_web::Scope {
+    web::scope("/user")
+        .service(get_user_controller)
+        .service(create_user_controller)
+        .service(get_user_id_controller)
+        .service(get_user_wallet_controller)
+        .service(deposit_user)
+        .service(delete_user)
+}
 
-#[get("/user")]
+#[get("")]
 pub async fn get_user_controller(state: Data<AppState>) -> impl Responder {
     let user_response = get_users(state).await;
     match user_response {
@@ -18,7 +27,7 @@ pub async fn get_user_controller(state: Data<AppState>) -> impl Responder {
     }
 }
 
-#[post("/user")]
+#[post("")]
 pub async fn create_user_controller(
     state: Data<AppState>,
     body: web::Json<CreateUser>,
@@ -34,7 +43,7 @@ pub async fn create_user_controller(
     }
 }
 
-#[post("/user/{id}/deposit")]
+#[post("/{id}/deposit")]
 pub async fn deposit_user(
     info: web::Path<(uuid::Uuid,)>,
     state: Data<AppState>,
@@ -56,7 +65,7 @@ pub async fn deposit_user(
     }
 }
 
-#[get("/user/{id}")]
+#[get("/{id}")]
 pub async fn get_user_id_controller(
     info: web::Path<(uuid::Uuid,)>,
     state: Data<AppState>,
@@ -67,7 +76,18 @@ pub async fn get_user_id_controller(
     }
 }
 
-#[delete("/user")]
+#[get("/{id}/wallet")]
+pub async fn get_user_wallet_controller(
+    info: web::Path<(uuid::Uuid,)>,
+    state: Data<AppState>,
+) -> impl Responder {
+    match find_wallet_by_user_id(state, info.0).await {
+        Ok(wallet) => HttpResponse::Ok().json(wallet),
+        Err(_) => HttpResponse::InternalServerError().json("Error in query"),
+    }
+}
+
+#[delete("")]
 pub async fn delete_user() -> impl Responder {
     HttpResponse::Ok().body("delete_user")
 }
