@@ -1,22 +1,8 @@
-import { useQuery } from "react-query";
-import { api } from "../../utils/api";
 import { useRouter } from "next/router";
+import React from "react";
 
-export default function GymPage() {
+function GymTable({ data }) {
   const router = useRouter();
-  const { data, error, isLoading } = useQuery("gyms", async () => {
-    const gyms = await api.get("/gym");
-    return gyms.data;
-  });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Erro ao carregar</div>;
-  }
-
   return (
     <>
       <table className="min-w-full divide-y divide-gray-200">
@@ -40,7 +26,12 @@ export default function GymPage() {
               <td className="px-6 py-4 whitespace-nowrap">{gym.address}</td>
               <td className="px-6 py-4 whitespace-nowrap">{gym.city}</td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <button onClick={() => {router.push(`gyms/${gym.id}`)}} className="bg-blue-500 text-white rounded-md">
+                <button
+                  onClick={() => {
+                    router.push(`gyms/${gym.id}`);
+                  }}
+                  className="bg-blue-500 text-white rounded-md"
+                >
                   <p className="m-3">Detalhes</p>
                 </button>
               </td>
@@ -51,3 +42,5 @@ export default function GymPage() {
     </>
   );
 }
+
+export default GymTable;

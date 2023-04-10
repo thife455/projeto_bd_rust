@@ -38,20 +38,6 @@ pub async fn find_gym_by_id(state: Data<AppState>, id: Uuid) -> Result<Gym, Erro
     sqlx::query_as!(Gym, "SELECT * FROM gyms WHERE id = $1", id).fetch_one(&state.db).await
 }
 
-pub async fn find_gym_by_city(state: &Data<AppState>, city: String) -> Result<Vec<Gym>, Error> {
-    sqlx::query_as!(Gym, "SELECT * FROM gyms G WHERE g.city = $1", city).fetch_all(&state.db).await
+pub async fn find_gym_by_name(state: Data<AppState>, id: Uuid) -> Result<Gym, Error>{
+    todo!()
 }
-
-pub async fn find_gym_by_name(state: &Data<AppState>, name: String) -> Result<Vec<Gym>, Error> {
-    sqlx::query_as!(Gym, "SELECT * FROM gyms G WHERE G.name LIKE '%$1%'", name).fetch_all(&state.db).await
-}
-
-pub async fn order_gym_by_sale(state: &Data<AppState>) -> Result<Vec<Gym>, Error> {
-    sqlx::query_as!(Gym, "SELECT * FROM gyms G ORDER BY (SELECT COUNT (*) FROM products P, user_products UP WHERE P.gym_id = G_id AND UP.product_id = P.id)").fetch_all(&state.db).await
-}
-
-pub async fn find_products_in_gym(state: &Data<AppState>, name: String) -> Result<Vec<Gym>, Error> {
-    sqlx::query_as!(GymProductQuery1, "SELECT G.name, P.name, P.price FORM gyms G, products P WHERE G.id = P.gym_id AND G.name = $1", name).fetch_all(&state).await
-}
-
-

@@ -44,17 +44,18 @@ pub async fn find_user_by_name(state: Data<AppState>, name: String) -> Result<Us
         .await
 }
 
-// pub async fn get_user(state: Data<AppState>, id: String) -> Result<User, Error> {
-//     let id = id;
-//     sqlx::query_as!(User, "SELECT * FROM users WHERE id = \"$1\";", id)
-//         .fetch_one(&state.db)
-//         .await
-// }
-
-pub async fn list_user_by_gym(state: Data<AppState>, gym_name: String) -> Result<Vec<User>, Error> {
-    sqlx::query_as!(User, "SELECT DISTINCT U.id, U.name, U.email FROM users U, gyms G, user_gym UG WHERE U.id = UG = user)id AND G.id = UG.gym_id AND G.name = $1", gym_name).fetch_all(&state).await
+pub async fn list_user_by_gym(state: Data<AppState>, gym_id: Uuid) -> Result<Vec<User>, Error> {
+    sqlx::query_as!(
+        User,
+        "SELECT DISTINCT u.id, u.email, u.name FROM users u JOIN user_products up ON up.user_id = u.id JOIN products p ON p.id = up.product_id JOIN gyms g ON g.id = p.gym_id WHERE g.id = $1",
+        gym_id
+    )
+    .fetch_all(&state.db)
+    .await
 }
 
 pub async fn order_user_by_name(state: Data<AppState>) -> Result<Vec<User>, Error> {
-    sqlx::query_as!(User, "SELECT * FROM user U ORDER BY U.name")
+    sqlx::query_as!(User, "SELECT * FROM users ORDER BY name")
+        .fetch_all(&state.db)
+        .await
 }
