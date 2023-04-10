@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { api } from "../../../utils/api";
 import ProductTable from "../../../components/ProductTable";
+import UsersTable from "../UsersTable";
 
 export default function UserInfoPage() {
   const router = useRouter();
@@ -12,13 +13,9 @@ export default function UserInfoPage() {
     ["users", id],
     async () => {
       const user = await api.get(`/user/${id}`);
-      const wallet = await api.get(`/user/${id}/wallet`);
-      const products = await api.get(`/user_products/user/${id}/products`);
-      console.log(products);
+
       const data = {
         ...user.data,
-        wallet: wallet.data,
-        products: products.data,
       };
       return data;
     },
@@ -56,15 +53,15 @@ export default function UserInfoPage() {
         <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
           <dl className="sm:divide-y sm:divide-gray-200">
             <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
-              <dt className="text-sm font-medium text-gray-500">Saldo</dt>
+              <dt className="text-sm font-medium text-gray-500">Nome</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
-                {data?.wallet.balance}
+                {data?.name}
               </dd>
             </div>
           </dl>
         </div>
         <div className="m-6">
-          {data?.products && <ProductTable products={data?.products} />}
+          {data?.users && <UsersTable userData={data?.users} />}
         </div>
       </div>
     </>
