@@ -82,7 +82,7 @@ pub async fn get_user_by_name_controller(
     info: web::Path<(String,)>,
     state: Data<AppState>,
 ) -> impl Responder {
-    let name = info.0.clone();
+    let name = &info.0.clone();
 
     let user_result = find_user_by_name(state, name).await;
 

@@ -14,7 +14,7 @@ export default function UserPage() {
   }
 
   if (error) {
-    return <div>Erro1!</div>;
+    return <div>Erro!</div>;
   }
 
   return (

@@ -11,8 +11,14 @@ use actix_web::{
     HttpResponse, Responder,
 };
 
-#[get("/products")]
-pub async fn get_products_controller(state: Data<AppState>) -> impl Responder {
+pub fn products_scope() -> actix_web::Scope {
+    web::scope("/products")
+        .service(get_products_controller)
+        .service(get_most_sold_products_controller)
+}
+
+#[get("")]
+async fn get_products_controller(state: Data<AppState>) -> impl Responder {
     let product_response = get_product(state).await;
     match product_response {
         Ok(product) => HttpResponse::Ok().json(product),
@@ -20,7 +26,7 @@ pub async fn get_products_controller(state: Data<AppState>) -> impl Responder {
     }
 }
 
-#[get("/products/most_sold")]
+#[get("/most_sold")]
 pub async fn get_most_sold_products_controller(state: Data<AppState>) -> impl Responder {
     let product_response = search_most_sold_products(state).await;
     match product_response {
@@ -29,7 +35,7 @@ pub async fn get_most_sold_products_controller(state: Data<AppState>) -> impl Re
     }
 }
 
-#[post("/products")]
+#[post("")]
 pub async fn create_products_controller(
     state: Data<AppState>,
     body: web::Json<CreateProduct>,
@@ -41,7 +47,7 @@ pub async fn create_products_controller(
         Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
     }
 }
-#[get("/products/{id}/gym")]
+#[get("/{id}/gym")]
 pub async fn get_product_gym_controller(
     state: Data<AppState>,
     info: web::Path<(uuid::Uuid,)>,
@@ -58,7 +64,7 @@ pub async fn get_product_gym_controller(
     }
 }
 
-#[post("/products/{id}/buy")]
+#[post("/{id}/buy")]
 pub async fn buy_product_controller(
     state: Data<AppState>,
     info: web::Path<(uuid::Uuid,)>,

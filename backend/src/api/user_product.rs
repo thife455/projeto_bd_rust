@@ -11,12 +11,12 @@ use crate::{
 };
 
 pub fn user_product_scope() -> actix_web::Scope {
-    web::scope("")
+    web::scope("/user_products")
         .service(get_user_product_by_user_controller)
         .service(get_user_products_products_by_user_controller)
 }
 
-#[get("/user_products/user/{id}")]
+#[get("/user/{id}")]
 async fn get_user_product_by_user_controller(
     state: Data<AppState>,
     info: web::Path<(uuid::Uuid,)>,
@@ -29,7 +29,7 @@ async fn get_user_product_by_user_controller(
     }
 }
 
-#[get("/user_products/user/{id}/products")]
+#[get("/user/{id}/products")]
 async fn get_user_products_products_by_user_controller(
     state: Data<AppState>,
     info: web::Path<(uuid::Uuid,)>,

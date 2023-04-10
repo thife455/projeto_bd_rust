@@ -30,7 +30,7 @@ export default function ProductTable({ products }) {
             </tr>
           </thead>
           <tbody>
-            {products.map((plan, planIdx) => (
+            {products?.map((plan, planIdx) => (
               <tr key={planIdx}>
                 <td
                   className={classNames(

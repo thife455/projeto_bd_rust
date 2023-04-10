@@ -1,9 +1,7 @@
-import { PaperClipIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { api } from "../../../utils/api";
 import ProductTable from "../../../components/ProductTable";
-import UsersTable from "../UsersTable";
 
 export default function UserInfoPage() {
   const router = useRouter();
@@ -13,13 +11,17 @@ export default function UserInfoPage() {
     ["users", id],
     async () => {
       const user = await api.get(`/user/${id}`);
+      const wallet = await api.get(`/user/${id}/wallet`);
+      const products = await api.get(`/user_products/user/${id}/products`)
 
       const data = {
         ...user.data,
+        balance: wallet.data.balance,
+        products: products.data
       };
       return data;
     },
-    { enabled: id.length > 0 }
+    { enabled: id.length > 0, refetchOnMount: true }
   );
 
   if (isLoading) {
@@ -27,7 +29,6 @@ export default function UserInfoPage() {
   }
 
   if (error) {
-    console.log(error);
     return <>Error ...</>;
   }
 
@@ -60,8 +61,32 @@ export default function UserInfoPage() {
             </div>
           </dl>
         </div>
+        <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
+          <dl className="sm:divide-y sm:divide-gray-200">
+            <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
+              <dt className="text-sm font-medium text-gray-500">Saldo</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                {data?.balance}
+              </dd>
+            </div>
+          </dl>
+        </div>
         <div className="m-6">
-          {data?.users && <UsersTable userData={data?.users} />}
+          <button
+            type="button"
+            className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => { router.push(router.asPath + `/deposit`) }}
+          >
+            Depositar
+          </button>
+          <div className="m-9">
+            <ProductTable data={data?.products} />
+            <div className="my-10">
+              <button
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() => { router.replace(`products/most_sold`) }} > Comprar produtos </button>
+            </div>
+          </div>
         </div>
       </div>
     </>

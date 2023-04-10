@@ -9,15 +9,16 @@ use actix_web::{
 };
 
 pub fn gym_scope() -> actix_web::Scope {
-    web::scope("/user")
+    web::scope("/gym")
         .service(get_gyms_controller)
         .service(get_gyms_city_controller)
         .service(get_gyms_users_controller)
         .service(create_gym_controller)
         .service(get_gym_products)
+        .service(get_gym_by_id_controller)
 }
 
-#[get("/gym")]
+#[get("")]
 async fn get_gyms_controller(state: Data<AppState>) -> impl Responder {
     let gym_response = get_gyms(state).await;
     match gym_response {
@@ -26,7 +27,7 @@ async fn get_gyms_controller(state: Data<AppState>) -> impl Responder {
     }
 }
 
-#[get("/gym/{city}/city")]
+#[get("/{city}/city")]
 async fn get_gyms_city_controller(
     info: web::Path<(String,)>,
     state: Data<AppState>,
@@ -39,7 +40,7 @@ async fn get_gyms_city_controller(
     }
 }
 
-#[get("/gym/{id}/users")]
+#[get("/{id}/users")]
 async fn get_gyms_users_controller(
     info: web::Path<(uuid::Uuid,)>,
     state: Data<AppState>,
@@ -51,7 +52,7 @@ async fn get_gyms_users_controller(
     }
 }
 
-#[post("/gym")]
+#[post("")]
 async fn create_gym_controller(
     state: Data<AppState>,
     body: web::Json<CreateGym>,
@@ -64,7 +65,7 @@ async fn create_gym_controller(
     }
 }
 
-#[get("/gym/{id}")]
+#[get("/{id}")]
 async fn get_gym_by_id_controller(
     info: web::Path<(uuid::Uuid,)>,
     state: Data<AppState>,
@@ -79,7 +80,7 @@ async fn get_gym_by_id_controller(
     }
 }
 
-#[get("/gym/{id}/products")]
+#[get("/{id}/products")]
 async fn get_gym_products(info: web::Path<(uuid::Uuid,)>, state: Data<AppState>) -> impl Responder {
     let gym_id = info.0;
     let products = find_products_by_gym_id(state, gym_id).await;

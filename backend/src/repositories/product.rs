@@ -61,6 +61,10 @@ pub async fn list_products_in_city(state: Data<AppState>, city: String) -> Resul
 }
 
 pub async fn search_product_by_name_order_value(state: Data<AppState>, name: String) -> Result<Vec<Product>, Error> {
-    sqlx::query_as!(Product, "SELECT p.name, P.id, P.price, P.gym_id FROM products P WHERE P.name LIKE $1  ORDER BY P.price", name).fetch_all(&state.db).await
+    sqlx::query_as!(Product, "SELECT p.name, P.id, P.price, P.gym_id 
+                              FROM products P 
+                              WHERE P.name LIKE $1 
+                              ORDER BY P.price", 
+                    name).fetch_all(&state.db).await
 }
 

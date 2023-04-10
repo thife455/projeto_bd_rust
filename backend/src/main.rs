@@ -6,11 +6,10 @@ mod services;
 use std::env;
 
 use actix_cors::Cors;
-use actix_web::http::header;
+use actix_web::web;
 use actix_web::{middleware::Logger, web::Data, App, HttpServer};
 use api::product::{
-    buy_product_controller, create_products_controller, get_product_gym_controller,
-    get_products_controller,
+    buy_product_controller, create_products_controller, get_product_gym_controller, products_scope,
 };
 use api::*;
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
@@ -35,24 +34,28 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Error building a connection pool");
 
+    fn services() -> actix_web::Scope {
+        web::scope("")
+            .service(product::products_scope())
+            .service(gym::gym_scope())
+            .service(user::user_scope())
+            .service(user_product::user_product_scope())
+    }
     HttpServer::new(move || {
         let logger = Logger::default();
 
         let cors = Cors::default()
-            .allowed_origin("http://localhost:3000")
-            .allowed_methods(vec!["GET", "POST"])
-            .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+            .allow_any_origin()
+            .allow_any_method()
+            .allow_any_header()
             .max_age(3600);
+
         App::new()
             .app_data(Data::new(AppState { db: pool.clone() }))
-            .service(get_products_controller)
+            .service(services())
             .service(create_products_controller)
-            .service(get_products_controller)
             .service(buy_product_controller)
             .service(get_product_gym_controller)
-            .service(user::user_scope())
-            .service(user_product::user_product_scope())
-            .service(gym::gym_scope())
             .wrap(logger)
             .wrap(cors)
     })

@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import { api } from "../../utils/api";
 import { useRouter } from "next/router";
+import GymTable from "../../components/GymTable";
 
 export default function GymPage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function GymPage() {
 
   return (
     <>
-
+      <GymTable data={data} />
     </>
   );
 }

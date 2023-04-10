@@ -38,8 +38,8 @@ pub async fn get_user_by_id(state: Data<AppState>, user_id: Uuid) -> Result<User
         .await
 }
 
-pub async fn find_user_by_name(state: Data<AppState>, name: String) -> Result<Vec<User>, Error> {
-    sqlx::query_as!(User, "SELECT * FROM users U WHERE U.name LIKE $1", name)
+pub async fn find_user_by_name(state: Data<AppState>, name: &str) -> Result<Vec<User>, Error> {
+    sqlx::query_as!(User, "SELECT * FROM users U WHERE U.name LIKE $1", "%".to_owned()+name+"%")
         .fetch_all(&state.db)
         .await
 }
@@ -47,7 +47,11 @@ pub async fn find_user_by_name(state: Data<AppState>, name: String) -> Result<Ve
 pub async fn list_user_by_gym(state: Data<AppState>, gym_id: Uuid) -> Result<Vec<User>, Error> {
     sqlx::query_as!(
         User,
-        "SELECT DISTINCT u.id, u.email, u.name FROM users u JOIN user_products up ON up.user_id = u.id JOIN products p ON p.id = up.product_id JOIN gyms g ON g.id = p.gym_id WHERE g.id = $1",
+        "SELECT DISTINCT u.id, u.email, u.name 
+         FROM users u JOIN user_products up ON up.user_id = u.id 
+                      JOIN products p ON p.id = up.product_id 
+                      JOIN gyms g ON g.id = p.gym_id 
+         WHERE g.id = $1",
         gym_id
     )
     .fetch_all(&state.db)

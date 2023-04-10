@@ -35,6 +35,16 @@ function GymTable({ data }) {
                   <p className="m-3">Detalhes</p>
                 </button>
               </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <button
+                  onClick={() => {
+                    router.push(`gyms/${gym.id}/users`);
+                  }}
+                  className="bg-blue-500 text-white rounded-md"
+                >
+                  <p className="m-3">Usuarios</p>
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
