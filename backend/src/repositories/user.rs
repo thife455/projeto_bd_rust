@@ -38,6 +38,12 @@ pub async fn get_user_by_id(state: Data<AppState>, user_id: Uuid) -> Result<User
         .await
 }
 
+pub async fn find_user_by_name(state: Data<AppState>, name: String) -> Result<User, Error> {
+    sqlx::query_as!(User, "SELECT * FROM users U WHERE U.name LIKE $1", name)
+        .fetch_one(&state.db)
+        .await
+}
+
 // pub async fn get_user(state: Data<AppState>, id: String) -> Result<User, Error> {
 //     let id = id;
 //     sqlx::query_as!(User, "SELECT * FROM users WHERE id = \"$1\";", id)

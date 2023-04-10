@@ -20,6 +20,15 @@ pub async fn get_products_controller(state: Data<AppState>) -> impl Responder {
     }
 }
 
+#[get("/products/most_sold")]
+pub async fn get_most_sold_products_controller(state: Data<AppState>) -> impl Responder {
+    let product_response = search_most_sold_products(state).await;
+    match product_response {
+        Ok(product) => HttpResponse::Ok().json(product),
+        Err(_e) => HttpResponse::InternalServerError().json("Unexpected error in query"),
+    }
+}
+
 #[post("/products")]
 pub async fn create_products_controller(
     state: Data<AppState>,
