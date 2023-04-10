@@ -50,3 +50,11 @@ pub async fn find_user_by_name(state: Data<AppState>, name: String) -> Result<Us
 //         .fetch_one(&state.db)
 //         .await
 // }
+
+pub async fn list_user_by_gym(state: Data<AppState>, gym_name: String) -> Result<Vec<User>, Error> {
+    sqlx::query_as!(User, "SELECT DISTINCT U.id, U.name, U.email FROM users U, gyms G, user_gym UG WHERE U.id = UG = user)id AND G.id = UG.gym_id AND G.name = $1", gym_name).fetch_all(&state).await
+}
+
+pub async fn order_user_by_name(state: Data<AppState>) -> Result<Vec<User>, Error> {
+    sqlx::query_as!(User, "SELECT * FROM user U ORDER BY U.name")
+}
