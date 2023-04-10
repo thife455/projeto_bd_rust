@@ -31,7 +31,7 @@ export default function ProductTable({ products }) {
           </thead>
           <tbody>
             {products.map((plan, planIdx) => (
-              <tr key={plan.id}>
+              <tr key={planIdx}>
                 <td
                   className={classNames(
                     planIdx === 0 ? "" : "border-t border-gray-200",

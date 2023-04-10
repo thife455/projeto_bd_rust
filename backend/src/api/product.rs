@@ -1,4 +1,5 @@
 use crate::model::user_product::CreateUserProduct;
+use crate::repositories::gym::find_gym_by_id;
 use crate::repositories::product::*;
 use crate::repositories::user_product::create_user_product;
 use crate::AppState;
@@ -31,9 +32,25 @@ pub async fn create_products_controller(
         Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
     }
 }
+#[get("/products/{id}/gym")]
+pub async fn get_product_gym_controller(
+    state: Data<AppState>,
+    info: web::Path<(uuid::Uuid,)>,
+) -> impl Responder {
+    let product_id = info.0;
 
-#[post("products/{id}/buy")]
-pub async fn buy_product(
+    let product = find_product_by_id(state.clone(), product_id).await.unwrap();
+
+    let gym_query = find_gym_by_id(state, product.gym_id).await;
+
+    match gym_query {
+        Ok(gym) => HttpResponse::Ok().json(gym),
+        Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
+    }
+}
+
+#[post("/products/{id}/buy")]
+pub async fn buy_product_controller(
     state: Data<AppState>,
     info: web::Path<(uuid::Uuid,)>,
     body: web::Json<BuyProduct>,
