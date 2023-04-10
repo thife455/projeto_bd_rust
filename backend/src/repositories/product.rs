@@ -43,3 +43,7 @@ pub async fn create_product(
 pub async fn find_product_by_id(state: Data<AppState>, id: Uuid) -> Result<Product, Error>{
     sqlx::query_as!(Product, "SELECT * FROM products WHERE id = $1", id).fetch_one(&state.db).await
 }
+
+pub async fn find_products_by_gym_id(state: Data<AppState>, gym_id: Uuid) -> Result<Vec<Product>, Error>{
+    sqlx::query_as!(Product, "SELECT * FROM products WHERE gym_id = $1", gym_id).fetch_all(&state.db).await
+}

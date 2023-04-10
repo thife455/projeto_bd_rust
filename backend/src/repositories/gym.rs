@@ -1,7 +1,9 @@
 use crate::{model::gym::*, AppState};
 
+
 use actix_web::web::Data;
 use sqlx::Error;
+use uuid::Uuid;
 
 pub async fn get_gyms(state: Data<AppState>) -> Result<Vec<Gym>, Error> {
     sqlx::query_as!(Gym, "SELECT * FROM gyms")
@@ -29,4 +31,9 @@ pub async fn create_gym(state: &Data<AppState>, user_data: CreateGym) -> Result<
         Ok(gym) => Ok(gym),
         Err(e) => Err(e),
     }
+}
+
+
+pub async fn find_gym_by_id(state: Data<AppState>, id: Uuid) -> Result<Gym, Error>{
+    sqlx::query_as!(Gym, "SELECT * FROM gyms WHERE id = $1", id).fetch_one(&state.db).await
 }

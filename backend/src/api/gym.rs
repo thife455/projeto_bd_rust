@@ -1,6 +1,6 @@
-use crate::model::gym::*;
 use crate::repositories::gym::*;
 use crate::AppState;
+use crate::{model::gym::*, repositories::product::find_products_by_gym_id};
 use actix_web::{
     get, post,
     web::{self, Data},
@@ -26,5 +26,34 @@ pub async fn create_gym_controller(
     match response {
         Ok(gym) => HttpResponse::Ok().json(gym),
         Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
+    }
+}
+
+#[get("/gym/{id}")]
+pub async fn get_gym_by_id_controller(
+    info: web::Path<(uuid::Uuid,)>,
+    state: Data<AppState>,
+) -> impl Responder {
+    let id = info.0;
+
+    let gym = find_gym_by_id(state, id).await;
+
+    match gym {
+        Ok(gym) => HttpResponse::Ok().json(gym),
+        Err(_) => HttpResponse::InternalServerError().json("Error in query"),
+    }
+}
+
+#[get("/gym/{id}/products")]
+pub async fn get_gym_products(
+    info: web::Path<(uuid::Uuid,)>,
+    state: Data<AppState>,
+) -> impl Responder {
+    let gym_id = info.0;
+    let products = find_products_by_gym_id(state, gym_id).await;
+
+    match products {
+        Ok(products) => HttpResponse::Ok().json(products),
+        Err(_) => HttpResponse::InternalServerError().json("Error in query"),
     }
 }
