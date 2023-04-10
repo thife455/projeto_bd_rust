@@ -8,9 +8,6 @@ use std::env;
 use actix_cors::Cors;
 use actix_web::http::header;
 use actix_web::{middleware::Logger, web::Data, App, HttpServer};
-use api::gym::{
-    create_gym_controller, get_gym_by_id_controller, get_gym_products, get_gyms_controller,
-};
 use api::product::{
     buy_product_controller, create_products_controller, get_product_gym_controller,
     get_products_controller,
@@ -48,17 +45,14 @@ async fn main() -> std::io::Result<()> {
             .max_age(3600);
         App::new()
             .app_data(Data::new(AppState { db: pool.clone() }))
-            .service(get_gyms_controller)
-            .service(get_gym_by_id_controller)
-            .service(get_gym_products)
             .service(get_products_controller)
-            .service(create_gym_controller)
             .service(create_products_controller)
             .service(get_products_controller)
             .service(buy_product_controller)
             .service(get_product_gym_controller)
             .service(user::user_scope())
             .service(user_product::user_product_scope())
+            .service(gym::gym_scope())
             .wrap(logger)
             .wrap(cors)
     })

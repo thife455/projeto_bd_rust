@@ -16,6 +16,8 @@ pub fn user_scope() -> actix_web::Scope {
         .service(get_user_wallet_controller)
         .service(deposit_user)
         .service(delete_user)
+        .service(get_user_by_name_controller)
+        .service(get_users_by_name_controller)
 }
 
 #[get("")]
@@ -61,6 +63,31 @@ pub async fn deposit_user(
 
     match query_result {
         Ok(wallet) => HttpResponse::Ok().json(wallet),
+        Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
+    }
+}
+
+#[get("/name")]
+pub async fn get_users_by_name_controller(state: Data<AppState>) -> impl Responder {
+    let user_result = order_user_by_name(state).await;
+
+    match user_result {
+        Ok(users) => HttpResponse::Ok().json(users),
+        Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
+    }
+}
+
+#[get("/name/{name}")]
+pub async fn get_user_by_name_controller(
+    info: web::Path<(String,)>,
+    state: Data<AppState>,
+) -> impl Responder {
+    let name = info.0.clone();
+
+    let user_result = find_user_by_name(state, name).await;
+
+    match user_result {
+        Ok(users) => HttpResponse::Ok().json(users),
         Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
     }
 }

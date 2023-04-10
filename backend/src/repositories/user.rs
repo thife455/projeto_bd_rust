@@ -38,9 +38,9 @@ pub async fn get_user_by_id(state: Data<AppState>, user_id: Uuid) -> Result<User
         .await
 }
 
-pub async fn find_user_by_name(state: Data<AppState>, name: String) -> Result<User, Error> {
+pub async fn find_user_by_name(state: Data<AppState>, name: String) -> Result<Vec<User>, Error> {
     sqlx::query_as!(User, "SELECT * FROM users U WHERE U.name LIKE $1", name)
-        .fetch_one(&state.db)
+        .fetch_all(&state.db)
         .await
 }
 
