@@ -13,6 +13,10 @@ export default function UserPage() {
     return <div>Loading...</div>;
   }
 
+  if (error) {
+    return <div>Erro1!</div>;
+  }
+
   return (
     <>
       <table className="min-w-full divide-y divide-gray-200">

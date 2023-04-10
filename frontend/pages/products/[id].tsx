@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { api } from "../../utils/api";
+import ProductTable from "../../components/ProductTable";
 
 export default function ProductInfoPage() {
   const router = useRouter();
