@@ -2,11 +2,12 @@ import { useRouter } from "next/router";
 import { useQuery } from "react-query";
 import { api } from "../../../utils/api";
 import ProductTable from "../../../components/ProductTable";
+import { useUserIdStore } from "../../../state/userIdState";
 
 export default function UserInfoPage() {
   const router = useRouter();
   const id = typeof router.query?.id === "string" ? router.query.id : "";
-
+  const store = useUserIdStore()
   const { data, error, isLoading } = useQuery(
     ["users", id],
     async () => {
@@ -80,11 +81,14 @@ export default function UserInfoPage() {
             Depositar
           </button>
           <div className="m-9">
-            <ProductTable data={data?.products} />
+            <ProductTable products={data?.products} />
             <div className="my-10">
               <button
                 className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                onClick={() => { router.replace(`products/most_sold`) }} > Comprar produtos </button>
+                onClick={() => {
+                  store.setId(router.query.id as string);
+                  router.push('/products/most_sold')
+                }} > Comprar produtos </button>
             </div>
           </div>
         </div>

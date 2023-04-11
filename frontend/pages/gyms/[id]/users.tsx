@@ -23,7 +23,6 @@ export default function GymInfoPage() {
   }
 
   if (error) {
-    console.log(error);
     return <>Error ...</>;
   }
 

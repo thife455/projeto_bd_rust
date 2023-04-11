@@ -60,6 +60,22 @@ export default function GymInfoPage() {
           </div>
         </dl>
       </div>
+
+      <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
+        <dl className="sm:divide-y sm:divide-gray-200">
+          <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
+            <dt className="text-sm font-medium text-gray-500">Usuarios</dt>
+            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+
+              <button
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() => { router.push(router.asPath + `/users`) }}
+              >Usuarios</button>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
       <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
         <dl className="sm:divide-y sm:divide-gray-200">
           <div className="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
@@ -67,6 +83,13 @@ export default function GymInfoPage() {
         </dl>
       </div>
       <ProductTable products={data?.products} />
+      <div className="flex justify-center self-center items-center my-8">
+        <button
+          className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+
+          onClick={() => { router.push(`${id}/create_product`) }}
+        > Adicionar produto</button>
+      </div>
     </div>
   );
 }

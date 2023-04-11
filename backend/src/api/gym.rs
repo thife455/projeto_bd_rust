@@ -16,6 +16,7 @@ pub fn gym_scope() -> actix_web::Scope {
         .service(create_gym_controller)
         .service(get_gym_products)
         .service(get_gym_by_id_controller)
+        .service(get_gym_by_name_controller)
 }
 
 #[get("")]
@@ -73,6 +74,21 @@ async fn get_gym_by_id_controller(
     let id = info.0;
 
     let gym = find_gym_by_id(state, id).await;
+
+    match gym {
+        Ok(gym) => HttpResponse::Ok().json(gym),
+        Err(_) => HttpResponse::InternalServerError().json("Error in query"),
+    }
+}
+
+#[get("/{name}/name")]
+async fn get_gym_by_name_controller(
+    info: web::Path<(String,)>,
+    state: Data<AppState>,
+) -> impl Responder {
+    let name = info.0.clone();
+
+    let gym = find_gym_by_name(state, name).await;
 
     match gym {
         Ok(gym) => HttpResponse::Ok().json(gym),

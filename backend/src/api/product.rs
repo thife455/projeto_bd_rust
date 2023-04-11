@@ -15,6 +15,11 @@ pub fn products_scope() -> actix_web::Scope {
     web::scope("/products")
         .service(get_products_controller)
         .service(get_most_sold_products_controller)
+        .service(create_products_controller)
+        .service(get_product_gym_controller)
+        .service(buy_product_controller)
+        .service(get_product_by_name_controller)
+        .service(get_product_price_controller)
 }
 
 #[get("")]
@@ -47,6 +52,7 @@ pub async fn create_products_controller(
         Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
     }
 }
+
 #[get("/{id}/gym")]
 pub async fn get_product_gym_controller(
     state: Data<AppState>,
@@ -60,6 +66,36 @@ pub async fn get_product_gym_controller(
 
     match gym_query {
         Ok(gym) => HttpResponse::Ok().json(gym),
+        Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
+    }
+}
+
+#[get("/{price}/price")]
+pub async fn get_product_price_controller(
+    state: Data<AppState>,
+    info: web::Path<(i32,)>,
+) -> impl Responder {
+    let product_id = info.0;
+
+    let product = search_product_above_price(state, product_id).await;
+
+    match product {
+        Ok(gym) => HttpResponse::Ok().json(gym),
+        Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
+    }
+}
+
+#[get("/{name}/name")]
+pub async fn get_product_by_name_controller(
+    state: Data<AppState>,
+    info: web::Path<(String,)>,
+) -> impl Responder {
+    let product_name = info.0.clone();
+
+    let products = search_product_by_name_order_value(state.clone(), product_name).await;
+
+    match products {
+        Ok(product) => HttpResponse::Ok().json(product),
         Err(_e) => HttpResponse::InternalServerError().json("Error in query"),
     }
 }

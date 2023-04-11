@@ -42,7 +42,7 @@ pub async fn find_gym_by_city(state: Data<AppState>, city: String) -> Result<Vec
 }
 
 pub async fn find_gym_by_name(state: Data<AppState>, name: String) -> Result<Vec<Gym>, Error> {
-    sqlx::query_as!(Gym, "SELECT * FROM gyms G WHERE G.name LIKE $1", name).fetch_all(&state.db).await
+    sqlx::query_as!(Gym, "SELECT * FROM gyms G WHERE G.name LIKE $1", "%".to_owned()+&name+"%").fetch_all(&state.db).await
 }
 
 pub async fn order_gym_by_sale(state: Data<AppState>) -> Result<Vec<Gym>, Error> {

@@ -14,6 +14,10 @@ type UserTableProps = {
 const UserTable = ({ data }: UserTableProps) => {
     const router = useRouter();
 
+    if (data === undefined) {
+        return <></>
+    }
+
     if (data.length === 0) {
         return (<>
             <div className="flex flex-col items-center">

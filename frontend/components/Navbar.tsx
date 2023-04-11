@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { PopOver } from "./Popover";
 
 const navigation = [
   { name: "Usuarios", href: "/users" },
@@ -43,6 +44,7 @@ export default function Navbar() {
               {item.name}
             </a>
           ))}
+          <PopOver />
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
@@ -87,6 +89,7 @@ export default function Navbar() {
                     {item.name}
                   </a>
                 ))}
+                <PopOver />
               </div>
               <div className="py-6"></div>
             </div>
